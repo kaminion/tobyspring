@@ -20,5 +20,7 @@ public class Main {
         System.out.println(user2.getPassword());
         System.out.println(user2.getId() + " 조회성공");
 
+//        System.out.println(dao.delete("whiteship"));
+
     }
 }

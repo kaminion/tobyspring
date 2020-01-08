@@ -2,14 +2,10 @@ package first_first;
 
 import java.sql.*;
 
-public class UserDAO {
-    private String url = "jdbc:mysql://localhost:3306/toby?serverTimezone=UTC";
-    private String id = "root";
-    private String pw = "1234";
+public abstract class UserDAO {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(url, id, pw);
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement("INSERT INTO USERS(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -25,8 +21,7 @@ public class UserDAO {
 
     public User get(String id) throws ClassNotFoundException, SQLException
     {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(url, this.id, pw);
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement("SELECT * FROM USERS WHERE id = ?");
         ps.setString(1, id);
@@ -45,4 +40,23 @@ public class UserDAO {
 
         return user;
     }
+
+    public boolean delete(String id) throws ClassNotFoundException, SQLException
+    {
+        boolean flag = false;
+        Connection c = getConnection();
+        PreparedStatement ps = c.prepareStatement("DELETE FROM users WHERE id = ?");
+        ps.setString(1, id);
+
+        if(ps.executeUpdate() > 0)
+        {
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    // DB연결에대해 더 유연성을 가짐
+    protected abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+
 }
